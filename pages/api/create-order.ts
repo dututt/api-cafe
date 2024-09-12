@@ -23,19 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             const result = await client.query('COMMIT');
             console.log(">>>>>>>>>>>>>>>>>>>>>>END:{ 3001: 222numTable, total, selects }: ", { numTable, total, selects })
-            res.revalidate("/api/orders")
-            return new Response(JSON.stringify(result), {
-                status: 201,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+
+            res.status(200).json({ result })
         } catch (error) {
             console.log(">>>>>>>>>>>>>>>>>>>>>>END ERROR")
             await client.query('ROLLBACK');
-            return new Response(`Webhook error: ${error}`, {
-                status: 400,
-            })
+
+            res.status(500).json({ error: 'failed to create order' })
         } finally {
             client.release();
         }
