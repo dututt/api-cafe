@@ -5,8 +5,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         const { numTable, total, selects } = await req.body
 
-        console.log(">>>>>>>>>>>>>>>>>>>>>>{ 3001: 222numTable, total, selects }: ", { numTable, total, selects })
-
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
@@ -22,11 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await client.query(insertOrderItemText, insertOrderItemValues);
             }
             const result = await client.query('COMMIT');
-            console.log(">>>>>>>>>>>>>>>>>>>>>>END:{ 3001: 222numTable, total, selects }: ", { numTable, total, selects })
             await res.revalidate("/api/orders")
             res.status(200).json({ result })
         } catch (error) {
-            console.log(">>>>>>>>>>>>>>>>>>>>>>END ERROR")
             await client.query('ROLLBACK');
 
             res.status(500).json({ error: 'failed to create order' })
