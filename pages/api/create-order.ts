@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await client.query('BEGIN');
 
-            const insertOrderText = `INSERT INTO orders(table_num, price) VALUES($1, $2, $3) RETURNING id`;
+            const insertOrderText = `INSERT INTO orders(table_num, price, status) VALUES($1, $2, $3) RETURNING id`;
             const insertOrderValues = [numTable, total, status];
             const orderResult = await client.query(insertOrderText, insertOrderValues);
             const orderId = orderResult.rows[0].id;
