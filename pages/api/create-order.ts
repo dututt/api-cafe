@@ -3,14 +3,14 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const { numTable, total, selects } = await req.body
+        const { numTable, total, selects, status } = await req.body
 
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
 
-            const insertOrderText = `INSERT INTO orders(table_num, price) VALUES($1, $2) RETURNING id`;
-            const insertOrderValues = [numTable, total];
+            const insertOrderText = `INSERT INTO orders(table_num, price) VALUES($1, $2, $3) RETURNING id`;
+            const insertOrderValues = [numTable, total, status];
             const orderResult = await client.query(insertOrderText, insertOrderValues);
             const orderId = orderResult.rows[0].id;
 
