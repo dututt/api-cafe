@@ -9,18 +9,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await client.query('BEGIN')
 
-            const updateItemText = `UPDATE Item SET title=$1, content=$2, type=$3, image=$4 WHERE id=$5`
+            const updateItemText = `UPDATE Item SET title=$1, content=$2, type=$3, image=$4 WHERE id=$5 RETURNING *`
             const updateItemValues = [title, content, type, image, id]
             await client.query(updateItemText, updateItemValues)
 
-            const updatePriceText = `UPDATE price SET price=$1 WHERE item_id=$2`
+            const updatePriceText = `UPDATE price SET price=$1 WHERE item_id=$2 RETURNING *`
             const updatePriceValues = [price, id]
             await client.query(updatePriceText, updatePriceValues)
 
             const result = await client.query('COMMIT')
-            await res.revalidate('/api/food-beverage')
             res.status(200).json({ result })
+            // await res.revalidate('/api/food-beverage')
         } catch (error) {
+            console.log(">>>>>>>>>>>>>>>>333handler update item and price: ", error)
             await client.query('ROLLBACK')
             res.status(500).json({ error: 'failed to update order' })
         } finally {
