@@ -20,12 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await client.query(insertOrderItemText, insertOrderItemValues);
             }
             const result = await client.query('COMMIT');
+            await res.revalidate("/api/orders")
             res.status(200).json({ result })
         } catch (error) {
             await client.query('ROLLBACK');
             res.status(500).json({ error: 'failed to create order' })
         } finally {
-            await res.revalidate("/api/orders")
             client.release();
         }
 
