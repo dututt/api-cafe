@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json({ result })
             // await res.revalidate('/api/food-beverage')
         } catch (error) {
-            console.log(">>>>>>>>>>>>>>>>333handler update item and price: ", error)
             await client.query('ROLLBACK')
             res.status(500).json({ error: 'failed to update order' })
         } finally {

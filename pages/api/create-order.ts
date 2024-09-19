@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // await res.revalidate("/api/orders")
         } catch (error) {
             await client.query('ROLLBACK');
-
             res.status(500).json({ error: 'failed to create order' })
         } finally {
             client.release();
