@@ -1,5 +1,3 @@
-import { sql } from "@vercel/postgres";
-
 // export default async function User({
 //   params
 // }: {
@@ -19,15 +17,15 @@ import { sql } from "@vercel/postgres";
 // }
 
 export default async function User(): Promise<JSX.Element> {
-  const { rows } = await sql`SELECT * FROM users`;
+  // const { rows } = await sql`SELECT * FROM users`;
 
   return (
     <div>
-      {rows.map((row) => (
+      {/* {rows.map((row) => (
         <div key={row.id}>
           {row.id} - {row.username}
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }
