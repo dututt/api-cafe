@@ -1,4 +1,3 @@
-// pages/api/read.ts
 import pool from '@/lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
