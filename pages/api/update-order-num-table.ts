@@ -6,14 +6,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "PUT") {
-    const { id, numTable } = await req.body;
+    const { id, numTable, status } = await req.body;
 
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
 
-      const updateItemText = `UPDATE orders SET table_num=$1 WHERE id=$2 RETURNING *`;
-      const updateItemValues = [numTable, id];
+      let updateItemText = "";
+      let updateItemValues = [];
+      if (status) {
+        updateItemText = `UPDATE orders SET status=$1, table_num=$2 WHERE id=$3 RETURNING *`;
+        updateItemValues = [status, numTable, id];
+      } else {
+        updateItemText = `UPDATE orders SET table_num=$1 WHERE id=$2 RETURNING *`;
+        updateItemValues = [numTable, id];
+      }
       await client.query(updateItemText, updateItemValues);
 
       const result = await client.query("COMMIT");
